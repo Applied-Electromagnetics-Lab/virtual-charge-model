@@ -1,12 +1,17 @@
 
 clc; close all; clear;
 
-%% Add File paths
+% This script is intended to test the normal brownian dynamics code by
+% comparing data to that generated in that generated in the paper:
+% A Combined Wormlike Chain and Bead Model for Dynamics Simulations of Long
+% Linear DNA -- Jian 1997
+
+%% Add the src code
 mydir  = pwd;
 idcs   = strfind(mydir,filesep);
-newdir = mydir(1:idcs(end)-1);
-fileadd = strcat(newdir,filesep,"v3");
-addpath(fileadd);
+newdir = mydir(1:idcs(end-1)-1);
+folderadd = strcat(newdir,filesep,"src");
+addpath(genpath(folderadd));
 
 %% Physical Constants
 
@@ -15,7 +20,7 @@ kB = 1.38064852e-23; % Boltzman Constant [J/K]
 eps0 = 8.85418782e-12; % Permitivity of free space [F/m]
 
 T = 300; % Temperature [K]
-epsr = 80; % Relative permitivity
+epsr = 80; % Relative permitivity of water
 eta = 8.9e-4; % Viscosity of water [Pa*s]
 sigma = 1; % Conductivity [S/m]
 
@@ -38,7 +43,10 @@ Nt = 1000;
 t = [0:dt:dt*(Nt-1)];
 
 % External Field
-E0 = [0,0,1]; % External Field amplitude [V/m]
+% Because this is just comparing normal BD, the external field is set to
+% zero. The virtual charge code will not activate if the external field is
+% not present. 
+E0 = [0,0,0]; % External Field amplitude [V/m]
 E0 = 0;
 f = 1e9; % External Field frequency [Hz]
 w = 2*pi*f; % Angular frequency
@@ -57,7 +65,7 @@ Ntrials = 100;
 % steps in the variable below.
 TimeRate = 62 / 1000; % Seconds / time step
 
-%% Load all parameters into the Param Structure
+%% Load all parameters into the Param Structure and initialize variables
 Params.L0 = L0;
 Params.h = h;
 Params.g = g;
@@ -80,6 +88,7 @@ D = zeros(Ntrials,Nt-1);
 Re2e = zeros(Ntrials,1);
 L = zeros(Ntrials,Nb-1);
 
+% Compute how much time the simulation will take
 TrialLength = TimeRate*Nt;
 TrialH = floor(TrialLength/3600);
 TrialM = floor(mod(TrialLength,3600)/60);
@@ -90,15 +99,19 @@ TotalH = floor(TotalLength/3600);
 TotalM = floor(mod(TotalLength,3600)/60);
 TotalS = mod(TotalLength,60);
 
+% Print out simulation prediction
 fprintf("The simulation will take approximately %i hours, %i minutes, %4.2f seconds per trial. \nIt will take approximately a total of %i hours, %i minutes, %4.2f seconds to compute all %i trials.\n",...
     TrialH, TrialM, TrialS, TotalH, TotalM, TotalS, Ntrials);
 
+%% Run the simulation. Print out each trial
 for Trial = 1:Ntrials
     tic
     [P, Re2e(Trial), L(Trial,:)] = My_DNA_BD(Params);
     toc
     Trial
 end
+
+%% Plot Results and compare to paper
 
 Lmean = mean(L);
 Dmean = mean(D);
