@@ -20,10 +20,10 @@ function [P, Re2e, L] = My_DNA_BD(Params)
 % P(i).a is the radius of particle i [m]
 % P(i).q is the charge of particle i [C]
 % Dbulk is the translational diffusion coefficient of the DNA over time
-% Re2e is the end to end distance of the DNA at the end of the simulation
-% [m]
-% L is a vector of length Nb giving the length of every bond at the end of
-% the simulation [m]
+% Re2e a vector length Nt giving the end to end distance of the DNA at the
+% end of the simulation [m]
+% L is a matrix size Nt x Nb giving the length of every bond of the
+% simulation at every point in time
 
 %% Model Parameters
 
@@ -65,6 +65,8 @@ eps = eps0*epsr;
 
 t = [0:dt:dt*(Nt-1)];
 D0 = kB*T / (6*pi*eta*a);
+Re2e = zeros(1,Nt);
+L = zeros(Nt,Nb-1);
 
 for i = 1:Nb
     P(i).X = zeros(Nt,3);
@@ -96,7 +98,11 @@ for n = 1:(Nt-1)
             rn(i,j,:) = P(i).X(n,:) - P(j).X(n,:);
             rmag(i,j) = norm(P(i).X(n,:) - P(j).X(n,:));
         end
-    end
+    end    
+    
+    %% Get DNA Measurements
+    [Re2e(n)] = MyEnd2EndDist(Xn); % End to end Distance
+    [L(n,:)] = MyBondLengths(Xn); % Bond Lengths
     
     %% Bulk Translation Diffusion Coeff
     % Compute the translational diffusion coeffecient based on the initial
@@ -159,7 +165,7 @@ for n = 1:(Nt-1)
             Fbending = -g*( -2*P(i+1).X(n,:) + 5*P(i).X(n,:) - 4*P(i-1).X(n,:) + P(i-2).X(n,:));
         elseif i == Nb
             Fbending = -g*( P(i).X(n,:) - 2*P(i-1).X(n,:) + P(i-2).X(n,:));
-        end
+        end    
 
         % --------Calculate Electrostatic force--------
         % Calculate the screened electrostatic force between charges. 
@@ -196,6 +202,9 @@ for n = 1:(Nt-1)
         end
         
         % Sum forces
+%         Fbending
+%         Fstretching
+%         Felectro
         F(i,:) = Fbending + Fstretching + Felectro + Fedynamic + Fext;
         
     end
@@ -219,7 +228,7 @@ for i = 1:Nb
     Xfinal(i,:) = P(i).X(Nt,:);
 end
 
-[Re2e] = MyEnd2EndDist(Xfinal);
-[L] = MyBondLengths(Xfinal);
+Re2e(Nt) = MyEnd2EndDist(Xfinal);
+L(Nt,:) = MyBondLengths(Xfinal);
 
 end

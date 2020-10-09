@@ -39,7 +39,7 @@ a = 1.59e-9; % Bead Radius [m]
 % Time parameters
 dt = 1000e-12; % Time step [s]
 Nb = 41;
-Nt = 1000;
+Nt = 500;
 t = [0:dt:dt*(Nt-1)];
 
 % External Field
@@ -57,7 +57,7 @@ Ntau = 3;
 Nvc = 10;
 
 % Number of Trials
-Ntrials = 100;
+Ntrials = 1;
 
 % Enter the Time rate for your simulation here. Since this will vary
 % between machines and simulation parameters, it's suggested you run one
@@ -106,7 +106,7 @@ fprintf("The simulation will take approximately %i hours, %i minutes, %4.2f seco
 %% Run the simulation. Print out each trial
 for Trial = 1:Ntrials
     tic
-    [P, Re2e(Trial), L(Trial,:)] = My_DNA_BD(Params);
+    [P, Re2e, L] = My_DNA_BD(Params);
     toc
     Trial
 end
