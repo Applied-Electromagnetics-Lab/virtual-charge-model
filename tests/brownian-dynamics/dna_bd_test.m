@@ -39,8 +39,14 @@ a = 1.59e-9; % Bead Radius [m]
 % Time parameters
 dt = 1000e-12; % Time step [s]
 Nb = 41;
-Nt = 500;
+Nt = 10000;
 t = [0:dt:dt*(Nt-1)];
+
+% Initialize DNA location
+Xinitial = zeros(Nb,3);
+for i = 1:Nb
+    Xinitial(i,3) = (i-1)*L0;
+end
 
 % External Field
 % Because this is just comparing normal BD, the external field is set to
@@ -82,6 +88,7 @@ Params.eta = eta;
 Params.Ntau = Ntau;
 Params.Nvc = Nvc;
 Params.Eext = Eext;
+Params.Xinitial = Xinitial;
 
 % Initialize Variables
 D = zeros(Ntrials,Nt-1);
@@ -124,6 +131,11 @@ xlabel('Bond Length [nm]')
 figure
 histogram(Re2e*1e9,30);
 xlabel('End to End Distance [nm]')
+
+figure
+plot(t*1e6,Re2e*1e9);
+ylabel('End to End Distance [nm]')
+xlabel('Time [\mu s]')
 
 figure
 plot(t(2:end)*1e6,Dmean.*1e12);

@@ -76,7 +76,7 @@ for i = 1:Nb
 end
 
 for i = 1:Nb
-    Xinitial(i,:) = P(i).X(1,:);
+    P(i).X(1,:) = Xinitial(i,:);
 end
     
 F = zeros(Nb,3);
