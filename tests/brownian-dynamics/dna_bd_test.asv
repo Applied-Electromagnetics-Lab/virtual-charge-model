@@ -13,7 +13,6 @@ newdir = mydir(1:idcs(end-1)-1);
 folderadd = strcat(newdir,filesep,"src");
 addpath(genpath(folderadd));
 
-
 %% Physical Constants
 
 qe = -1.60217662e-19; % Charge of electron [C]
@@ -40,13 +39,13 @@ a = 1.59e-9; % Bead Radius [m]
 % Time parameters
 dt = 1000e-12; % Time step [s]
 Nb = 41;
-Nt = 100;
+Nt = 10000;
 t = [0:dt:dt*(Nt-1)];
 
 % Initialize DNA location
 Xinitial = zeros(Nb,3);
 for i = 1:Nb
-    Xinitial(i,3) = (i-1)*L0;
+    X(i,3) = (i-1)*L0;
 end
 
 % External Field
@@ -89,8 +88,6 @@ Params.eta = eta;
 Params.Ntau = Ntau;
 Params.Nvc = Nvc;
 Params.Eext = Eext;
-Params.Xinitial = Xinitial;
-Params.ComputeDynamicForce = false;
 
 % Initialize Variables
 D = zeros(Ntrials,Nt-1);
@@ -121,11 +118,6 @@ for Trial = 1:Ntrials
 end
 
 %% Plot Results and compare to paper
-
-for i = 1:Nb
-    Xfinal(i,:) = P(i).X(Nt,:);
-end
-save("DNA_100us_41b","Xfinal");
 
 Lmean = mean(L);
 Dmean = mean(D);
