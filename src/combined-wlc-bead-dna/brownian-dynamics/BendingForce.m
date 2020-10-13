@@ -28,19 +28,70 @@ Fbending =  zeros(Nb,3);
 % bending force is taken from "Multistep Brownian Dynamics: 
 % Application to Short Wormlike Chains" by S. A. ALLISON and J. A.
 % McCAMMON
+
 for i = 1:Nb
     if i == 1
-        Fbending(i,:) = -g*( P(i).X(n,:) - 2*P(i+1).X(n,:) + P(i+2).X(n,:));
+        r1 = P(i+1).X(n,:) - P(i).X(n,:);
+        r2 = P(i+2).X(n,:) - P(i+1).X(n,:);
+        u1 = r1./norm(r1);
+        u2 = r2./norm(r2);
+        
+        Fbending(i,:) = -g*(u2 - u1)./norm(r1);
     elseif i == 2
-        Fbending(i,:) = -g*( -2*P(i-1).X(n,:) + 5*P(i).X(n,:) - 4*P(i+1).X(n,:) + P(i+2).X(n,:));
+        r1 = P(i).X(n,:) - P(i-1).X(n,:);
+        r2 = P(i+1).X(n,:) - P(i).X(n,:);
+        r3 = P(i+2).X(n,:) - P(i+1).X(n,:);
+        u1 = r1./norm(r1);
+        u2 = r2./norm(r2);
+        u3 = r3./norm(r3);
+        
+        Fbending(i,:) = -g*(u2-u1) * (1/norm(r1) + 1/norm(r2)) - g*(u3-u2)/norm(r2);
     elseif (i >= 3) && (i <= Nb - 2)
-        Fbending(i,:) = -g*( P(i-2).X(n,:) - 4*P(i-1).X(n,:) + 6*P(i).X(n,:) - 4*P(i+1).X(n,:) + P(i+2).X(n,:));
+        rim2 = P(i-1).X(n,:) - P(i-2).X(n,:);
+        rim1 = P(i).X(n,:) - P(i-1).X(n,:);
+        ri = P(i+1).X(n,:) - P(i).X(n,:);
+        rip1 = P(i+2).X(n,:) - P(i+1).X(n,:);
+        
+        uim2 = rim2./norm(rim2);
+        uim1 = rim1./norm(rim1);
+        ui = ri./norm(ri);
+        uip1 = rip1./norm(rip1);
+        
+        Fbending(i,:) = -g*(uim1 - uim2)./norm(rim1) + g*(ui - uim1)*(1/norm(rim1) + 1/norm(ri)) - g*(uip1 - ui)./norm(ri);
     elseif i == Nb - 1
-        Fbending(i,:) = -g*( -2*P(i+1).X(n,:) + 5*P(i).X(n,:) - 4*P(i-1).X(n,:) + P(i-2).X(n,:));
+        rim2 = P(i-1).X(n,:) - P(i-2).X(n,:);
+        rim1 = P(i).X(n,:) - P(i-1).X(n,:);
+        ri = P(i+1).X(n,:) - P(i).X(n,:);
+        
+        uim2 = rim2./norm(rim2);
+        uim1 = rim1./norm(rim1);
+        ui = ri./norm(ri);
+        
+        Fbending(i,:) = -g*(uim1 - uim2)./norm(rim1) + g*(ui - uim1)*(1/norm(rim1) + 1/norm(ri));
     elseif i == Nb
-        Fbending(i,:) = -g*( P(i).X(n,:) - 2*P(i-1).X(n,:) + P(i-2).X(n,:));
+        rim2 = P(i-1).X(n,:) - P(i-2).X(n,:);
+        rim1 = P(i).X(n,:) - P(i-1).X(n,:);
+        
+        uim2 = rim2./norm(rim2);
+        uim1 = rim1./norm(rim1);
+        
+        Fbending(i,:) = -g*(uim1 - uim2)./norm(rim1);
     end    
 end
+
+% for i = 1:Nb
+%     if i == 1
+%         Fbending(i,:) = -g*( P(i).X(n,:) - 2*P(i+1).X(n,:) + P(i+2).X(n,:));
+%     elseif i == 2
+%         Fbending(i,:) = -g*( -2*P(i-1).X(n,:) + 5*P(i).X(n,:) - 4*P(i+1).X(n,:) + P(i+2).X(n,:));
+%     elseif (i >= 3) && (i <= Nb - 2)
+%         Fbending(i,:) = -g*( P(i-2).X(n,:) - 4*P(i-1).X(n,:) + 6*P(i).X(n,:) - 4*P(i+1).X(n,:) + P(i+2).X(n,:));
+%     elseif i == Nb - 1
+%         Fbending(i,:) = -g*( -2*P(i+1).X(n,:) + 5*P(i).X(n,:) - 4*P(i-1).X(n,:) + P(i-2).X(n,:));
+%     elseif i == Nb
+%         Fbending(i,:) = -g*( P(i).X(n,:) - 2*P(i-1).X(n,:) + P(i-2).X(n,:));
+%     end    
+% end
 
 end
 

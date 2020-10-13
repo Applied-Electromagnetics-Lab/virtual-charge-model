@@ -136,11 +136,11 @@ for n = 1:(Nt-1)
     end
     
     % Sum forces
-    Fbending
-    Fstretching
-    Felectro
-    Fedynamic
-    Fext
+%     Fbending
+%     Fstretching
+%     Felectro
+%     Fedynamic
+%     Fext
     Ftotal = Fbending + Fstretching + Felectro + Fedynamic + Fext;
     
     %% Propagate Motion

@@ -40,7 +40,7 @@ a = 1.59e-9; % Bead Radius [m]
 % Time parameters
 dt = 1000e-12; % Time step [s]
 Nb = 41;
-Nt = 100;
+Nt = 1e5;
 t = [0:dt:dt*(Nt-1)];
 
 % Initialize DNA location
@@ -70,7 +70,7 @@ Ntrials = 1;
 % between machines and simulation parameters, it's suggested you run one
 % quick trial and find how long it takes. Then enter the seconds per time
 % steps in the variable below.
-TimeRate = 62 / 1000; % Seconds / time step
+TimeRate = 454 / 10000; % Seconds / time step
 
 %% Load all parameters into the Param Structure and initialize variables
 Params.L0 = L0;
@@ -115,7 +115,7 @@ fprintf("The simulation will take approximately %i hours, %i minutes, %4.2f seco
 %% Run the simulation. Print out each trial
 for Trial = 1:Ntrials
     tic
-    [P, Re2e, L] = My_DNA_BD(Params);
+    [P, Re2e, L, Dbulk] = My_DNA_BD(Params);
     toc
     Trial
 end
@@ -128,7 +128,6 @@ end
 save("DNA_100us_41b","Xfinal");
 
 Lmean = mean(L);
-Dmean = mean(D);
 
 % save("June_23rd_N100_10us_Dij_2");
 figure
@@ -145,7 +144,7 @@ ylabel('End to End Distance [nm]')
 xlabel('Time [\mu s]')
 
 figure
-plot(t(2:end)*1e6,Dmean.*1e12);
+plot(t*1e6,Dbulk.*1e12);
 xlabel('Time \mu s')
 ylabel('Diffusion Coefficient (\mu m)^2 / s')
 
