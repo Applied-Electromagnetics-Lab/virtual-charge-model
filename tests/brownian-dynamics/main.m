@@ -34,7 +34,7 @@ a = 1.59e-9; % Bead Radius [m]
 % Time parameters
 dt = 1000e-12; % Time step [s]
 Nb = 41;
-Nt = 100;
+Nt = 5000;
 t = [0:dt:dt*(Nt-1)];
 
 % Initialize DNA location
@@ -50,11 +50,12 @@ Xinitial = Var.Xfinal;
 % Because this is just comparing normal BD, the external field is set to
 % zero. The virtual charge code will not activate if the external field is
 % not present. 
-E0 = [0,0,0]; % External Field amplitude [V/m]
-E0 = 0;
-f = 1e9; % External Field frequency [Hz]
-w = 2*pi*f; % Angular frequency
-Eext = sin(w.*t).' * E0;
+E0 = [0,0,1].*1e6; % External Field amplitude [V/m]
+Eext = ones(Nt,1) * E0;
+Eext(1:Nt/2,3) = 0;
+% f = 1e9; % External Field frequency [Hz]
+% w = 2*pi*f; % Angular frequency
+% Eext = sin(w.*t).' * E0;
 
 % Virtual Charge Parameters
 Ntau = 3;
