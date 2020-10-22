@@ -36,10 +36,10 @@ for j = 1:Nb
 end
     
 for i = 1:Nb
-    % Exclude the particle we are computing the force on 
-    Pnow = [Pnow(1:i-1),Pnow(i+1:end)];
+    % Exclude the particle we are computing the force on   
+    Pnow2 = [Pnow(1:i-1),Pnow(i+1:end)];
 
-    [Evc, ~, ~] = MyVirtualChargeEnsemble(Pnow, t(1:n), P(i).X(n,:), epsr, sigma, Nvc, Ntau);
+    [Evc, ~, ~] = MyVirtualChargeEnsemble(Pnow2, t(1:n), P(i).X(n,:), epsr, sigma, Nvc, Ntau);
     Fedynamic(i,:) = Evc*P(i).q;
 end
 

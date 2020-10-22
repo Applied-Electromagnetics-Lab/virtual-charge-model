@@ -32,9 +32,9 @@ rD = 3.07e-9; % Debye length [m]
 a = 1.59e-9; % Bead Radius [m]
 
 % Time parameters
-dt = 1000e-12; % Time step [s]
+dt = 100e-12; % Time step [s]
 Nb = 41;
-Nt = 5000;
+Nt = 100;
 t = [0:dt:dt*(Nt-1)];
 
 % Initialize DNA location
@@ -88,7 +88,7 @@ Params.Ntau = Ntau;
 Params.Nvc = Nvc;
 Params.Eext = Eext;
 Params.Xinitial = Xinitial;
-Params.ComputeDynamicForce = false;
+Params.ComputeDynamicForce = true;
 
 % Initialize Variables
 D = zeros(Ntrials,Nt-1);
@@ -133,9 +133,9 @@ histogram(Re2e*1e9,30);
 xlabel('End to End Distance [nm]')
 
 figure
-plot(t*1e6,Re2e*1e9);
+plot(t*1e9,Re2e*1e9);
 ylabel('End to End Distance [nm]')
-xlabel('Time [\mu s]')
+xlabel('Time [ns]')
 
 figure
 plot(t(2:end)*1e6,Dmean.*1e12);
