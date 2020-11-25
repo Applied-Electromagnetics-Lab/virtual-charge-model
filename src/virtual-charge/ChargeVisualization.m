@@ -21,7 +21,7 @@ wp = sigma / eps; % Plasma frequency [rad / s]
 taup = 1/wp; % Plasma time constant [s]
 
 % Path properties
-f = 1e9;
+f = 1000e6;
 T = 1/f;
 w = 2*pi*f;
 A = 2.5e-9;
