@@ -32,9 +32,9 @@ rD = 3.07e-9; % Debye length [m]
 a = 1.59e-9; % Bead Radius [m]
 
 % Time parameters
-dt = 100e-12; % Time step [s]
+dt = 50e-12; % Time step [s]
 Nb = 41;
-Nt = 100;
+Nt = 200;
 t = [0:dt:dt*(Nt-1)];
 
 % Initialize DNA location
@@ -53,22 +53,23 @@ Xinitial = Var.Xfinal;
 E0 = [0,0,1].*1e6; % External Field amplitude [V/m]
 Eext = ones(Nt,1) * E0;
 Eext(1:Nt/2,3) = 0;
+% Eext(1:2*Nt/4,3) = 0;
 % f = 1e9; % External Field frequency [Hz]
 % w = 2*pi*f; % Angular frequency
 % Eext = sin(w.*t).' * E0;
 
 % Virtual Charge Parameters
 Ntau = 3;
-Nvc = 10;
+Nvc = 5;
 
 % Number of Trials
-Ntrials = 1;
+Ntrials = 5;
 
 % Enter the Time rate for your simulation here. Since this will vary
 % between machines and simulation parameters, it's suggested you run one
 % quick trial and find how long it takes. Then enter the seconds per time
 % steps in the variable below.
-TimeRate = 62 / 1000; % Seconds / time step
+TimeRate = 71 / 100; % Seconds / time step
 
 %% Load all parameters into the Param Structure and initialize variables
 Params.L0 = L0;
@@ -92,7 +93,7 @@ Params.ComputeDynamicForce = true;
 
 % Initialize Variables
 D = zeros(Ntrials,Nt-1);
-Re2e = zeros(Ntrials,1);
+Re2e = zeros(Ntrials,Nt);
 L = zeros(Ntrials,Nb-1);
 
 % Compute how much time the simulation will take
@@ -113,7 +114,7 @@ fprintf("The simulation will take approximately %i hours, %i minutes, %4.2f seco
 %% Run the simulation. Print out each trial
 for Trial = 1:Ntrials
     tic
-    [P, Re2e, L] = My_DNA_BD(Params);
+    [P, Re2e(Trial,:), L] = My_DNA_BD(Params);
     toc
     Trial
 end
@@ -123,7 +124,7 @@ end
 Lmean = mean(L);
 Dmean = mean(D);
 
-% save("June_23rd_N100_10us_Dij_2");
+save("November_24th_N200_10ns_1e6Pulse");
 figure
 histogram(L*1e9,30);
 xlabel('Bond Length [nm]')

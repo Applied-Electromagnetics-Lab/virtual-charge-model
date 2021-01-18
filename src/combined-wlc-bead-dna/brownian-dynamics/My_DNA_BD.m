@@ -106,7 +106,8 @@ for n = 1:(Nt-1)
     [L(n,:)] = MyBondLengths(Xn); % Bond Lengths
     % Compute the translational diffusion coeffecient based on the initial
     % and current position of the DNA
-    [Dbulk(n)] = MyTransDiffusionCoeff(Xn,Xinitial,t(n)); 
+%     [Dbulk(n)] = MyTransDiffusionCoeff(Xn,Xinitial,t(n)); 
+    Dbulk(n) = 0;
     
     % Calculate the Translational Diffusion tensor
     D = TransDiffusionTensor(P, eta, T, n);
@@ -164,6 +165,6 @@ end
 
 Re2e(Nt) = MyEnd2EndDist(Xfinal);
 L(Nt,:) = MyBondLengths(Xfinal);
-[Dbulk(Nt)] = MyTransDiffusionCoeff(Xfinal,Xinitial,t(Nt));
+% [Dbulk(Nt)] = MyTransDiffusionCoeff(Xfinal,Xinitial,t(Nt));
 
 end
